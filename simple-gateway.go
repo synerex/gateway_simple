@@ -28,7 +28,7 @@ func forwardGatewayMsg(sg api.Synerex_SubscribeGatewayClient , client api.Synere
 	ctx := context.Background() //
 	for {
 		msg, err :=sg.Recv()
-		if err != nil {
+		if err == nil {
 			client.ForwardToGateway( ctx,msg)
 		}
 	}
