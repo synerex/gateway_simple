@@ -16,7 +16,8 @@ var (
 	nodesrv    = flag.String("nodesrv", "127.0.0.1:9990", "Node ID Server")
 	gateway    = flag.String("gateway", "0,1", "Speficy Synerex Server IDs(ordered)")
 	readOnly   = flag.Bool("ro", false , "Read Only flag")
-
+	name       = flag.String("name", "SimpleGW", "GW Name")
+	servers    = flag.String("servers", "", "Speficy Synerex Server names")
 	idlist     []uint64
 	spMap      map[uint64]*sxutil.SupplyOpts
 	mu         sync.Mutex
@@ -44,11 +45,12 @@ func main() {
 		NodeType: synerex_nodeapi.NodeType_GATEWAY,
 		ClusterId: 0,
 		AreaId: "Default",
+		GwInfo: *servers,
 	}
 
 	channelTypes := []uint32{0,1,2,3,4,5,6,7,8,9}
 	// obtain synerex server address from nodeserv
-	srvs, err := sxutil.RegisterNode(*nodesrv, "SimpleGW", channelTypes, sxo)
+	srvs, err := sxutil.RegisterNode(*nodesrv, *name, channelTypes, sxo)
 	if err != nil {
 		log.Fatal("Can't register node...")
 	}
