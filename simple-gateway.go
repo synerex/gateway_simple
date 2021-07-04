@@ -49,7 +49,7 @@ func main() {
 		GwInfo:     *servers,
 	}
 
-	channelTypes := []uint32{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+	channelTypes := []uint32{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,14,15,16,17,18,19,20,21,22}
 	// obtain synerex server address from nodeserv
 	srvs, err := sxutil.RegisterNode(*nodesrv, *name, channelTypes, sxo)
 	if err != nil {
@@ -61,7 +61,7 @@ func main() {
 	wg := sync.WaitGroup{} // for syncing other goroutines
 	client0 := sxutil.GrpcConnectServer(servers[0])
 
-	channels := []uint32{0, 1, 2, 3, 4, 5, 6, 7, 8}
+	channels := []uint32{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,14,15,16,17,18,19,20,21,22}
 
 	gi := &api.GatewayInfo{
 		ClientId:    sxutil.GenerateIntID(),        // new client_ID
@@ -69,7 +69,7 @@ func main() {
 		Channels:    channels,
 	}
 	ctx := context.Background() //
-	sg0, err := client0.SubscribeGateway(ctx, gi)
+	sg0, err := client0.Client.SubscribeGateway(ctx, gi)
 	if err != nil {
 		log.Printf("Synerex subscribe Error %v\n", err)
 	}
@@ -80,13 +80,13 @@ func main() {
 			log.Printf("Duplicated server!")
 		} else {
 			client1 := sxutil.GrpcConnectServer(servers[1])
-			sg1, err1 := client1.SubscribeGateway(ctx, gi)
+			sg1, err1 := client1.Client.SubscribeGateway(ctx, gi)
 			if err1 != nil {
 				log.Printf("Synerex subscribe Error to %s %v\n", servers[1], err1)
 			}
 			wg.Add(2)
-			go forwardGatewayMsg(sg1, client0)
-			go forwardGatewayMsg(sg0, client1)
+			go forwardGatewayMsg(sg1, client0.Client)
+			go forwardGatewayMsg(sg0, client1.Client)
 		}
 	} else {
 		for {
